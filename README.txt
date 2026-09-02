@@ -1,32 +1,46 @@
-WORD POWER! VERSION 5 — TEACHER UPDATES
-========================================
+WORD POWER! VERSION 6 — REWARDS
+================================
 
-UPLOAD/REPLACE THESE FILES IN THE ROOT OF YOUR EXISTING WORD-POWER GITHUB REPOSITORY:
-- index.html
-- manifest.json
-- service-worker.js
-- icon.svg
-- teacher-updates.json
+NEW IN VERSION 6
+- Top score now clearly says "Total Stars"
+- Rewards button next to the star total
+- Word Power Cat accessories
+- Major 30-star unlock: RAINBOW ROOM
+- Smaller accessory milestones:
+  5 stars  = Pink Bow
+  10 stars = Sunglasses
+  15 stars = Crown
+  20 stars = Backpack
+  30 stars = Rainbow Room (BIG UNLOCK)
+  40 stars = Unicorn Headband
+  50 stars = Sparkly Cat
+- Kids keep their total star count; rewards unlock at milestones instead of spending stars
+- Unlocked accessories can be equipped
+- Achievement badges
+- Reset ALL Progress & Stars button in Parent / Teacher Area
+- Migrates Version 5 saved data on the same browser/site
 
-Version 5 adds a shared Teacher Updates feed while keeping each family's progress local to their own device.
+TEACHER UPDATES
+teacher-updates.json is unchanged and remains the shared official lesson feed.
 
-IMPORTANT: Keep the SAME GitHub repository and Pages URL. Do not create a new Pages site.
+HOW TO UPDATE YOUR CURRENT GITHUB APP
+1. Unzip this Version 6 package.
+2. Open the existing WORD-POWER GitHub repository.
+3. Upload/replace:
+   index.html
+   manifest.json
+   service-worker.js
+   icon.svg
+   teacher-updates.json
+4. Commit directly to main.
+5. GitHub Pages will redeploy automatically.
+6. Keep the SAME repository and SAME Pages link.
 
-HOW TO ADD A FUTURE TEACHER LIST
-1. Edit teacher-updates.json on GitHub.
-2. Add a lesson with a permanent unique id, updateVersion 1, type hfw or spelling, testDate, words, and optional story.
-3. Commit the file.
-4. Families tap Check Teacher Updates in the app.
+STARTING YOUR CHILD AT ZERO
+Open:
+Parent / Teacher Area > Reset ALL Progress & Stars
 
-HOW TO CORRECT AN EXISTING SHARED LESSON
-- Keep the exact same id.
-- Increase updateVersion (for example 1 to 2).
-- Make the corrections and commit.
-- The app will show UPDATE instead of creating a duplicate.
+This resets only that browser/device. It does not reset other families.
 
-PROGRESS
-- Stars, mastered words, Smart Review misses, and Story completion remain on each user's device.
-- Updating a teacher lesson preserves matching progress for words that remain in the lesson.
-- Version 4 browser data is migrated into Version 5 on the same GitHub Pages site.
-
-DEFAULT PARENT PIN: 1234
+DEFAULT PARENT PIN
+1234
