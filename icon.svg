@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="112" fill="#8f6fff"/>
+<circle cx="256" cy="230" r="150" fill="#fffaf3"/>
+<path d="M150 170l45-68 45 66M272 168l45-66 45 68" fill="#fffaf3" stroke="#302946" stroke-width="18" stroke-linejoin="round"/>
+<circle cx="206" cy="228" r="14" fill="#302946"/><circle cx="306" cy="228" r="14" fill="#302946"/>
+<path d="M245 267h22l-11 14z" fill="#ff9cc3"/>
+<path d="M256 282c-19 26-49 28-70 7M256 282c19 26 49 28 70 7" fill="none" stroke="#302946" stroke-width="11" stroke-linecap="round"/>
+<path d="M126 333l28 9-19 23zM386 333l-28 9 19 23z" fill="#ffd86c"/>
+<rect x="120" y="377" width="272" height="72" rx="30" fill="#ffd86c"/>
+<text x="256" y="428" text-anchor="middle" font-size="55" font-family="Arial,sans-serif" font-weight="900" fill="#302946">WORDS!</text>
+</svg>

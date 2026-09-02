@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#8f6fff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Word Power">
+<title>Word Power!</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{
+  --cream:#fffaf3;--panel:#fff;--ink:#302946;--muted:#706982;--border:#ded7eb;
+  --purple:#8f6fff;--purpleSoft:#efe9ff;--pink:#ff9cc3;--pinkSoft:#fff0f6;
+  --yellow:#ffd86c;--yellowSoft:#fff7d4;--mint:#79d7b5;--mintSoft:#eafaf4;
+  --sky:#8ec9ff;--skySoft:#eef7ff;--orange:#ffb36e;--danger:#c64b6b;
+  --shadow:0 10px 28px rgba(59,46,100,.10);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);
+  background:
+  radial-gradient(circle at 5% 0%,#ffeef6 0 115px,transparent 116px),
+  radial-gradient(circle at 95% 4%,#eee8ff 0 125px,transparent 126px),
+  var(--cream);
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+.app{max-width:1100px;margin:0 auto;padding:16px}
+.hero{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.mascot{width:72px;height:72px;border-radius:22px;display:grid;place-items:center;font-size:43px;background:linear-gradient(145deg,var(--purpleSoft),var(--pinkSoft));border:2px solid #e4d9ff;box-shadow:var(--shadow)}
+.brand h1{margin:0;font-size:clamp(31px,6vw,48px);line-height:1}
+.brand p{margin:7px 0 0;color:var(--muted);font-weight:700}
+.stars{background:#fff;border:1px solid var(--border);border-radius:18px;padding:11px 15px;box-shadow:var(--shadow);font-weight:950}
+.card{background:rgba(255,255,255,.97);border:1px solid var(--border);border-radius:26px;padding:18px;box-shadow:var(--shadow)}
+.hidden{display:none!important}
+.primary,.secondary,.soft,.danger,.mintbtn{border:0;border-radius:15px;min-height:46px;padding:11px 17px;font-weight:900}
+.primary{background:var(--purple);color:#fff}
+.secondary{background:var(--yellow);color:#4b3c11}
+.soft{background:var(--purpleSoft);color:var(--ink);border:1px solid #d8ceff}
+.mintbtn{background:var(--mintSoft);color:var(--ink);border:1px solid #b9ead6}
+.danger{background:#fff0f4;color:var(--danger);border:1px solid #f1bfce}
+.small{font-size:13px;color:var(--muted)}
+.label{text-align:center;font-weight:950;color:var(--muted);letter-spacing:.09em;font-size:13px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.center{text-align:center}
+
+/* HOME */
+.home-title{margin:0 0 4px;font-size:28px}
+.lesson-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.lesson-card{border:1px solid var(--border);border-radius:24px;padding:18px;background:#fff;box-shadow:var(--shadow)}
+.lesson-card.hfw{background:linear-gradient(145deg,#fff,#f4efff)}
+.lesson-card.spelling{background:linear-gradient(145deg,#fff,#fff5df)}
+.lesson-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.lesson-icon{font-size:38px}
+.lesson-card h2{margin:4px 0 4px;font-size:25px}
+.lesson-date{font-size:13px;font-weight:900;padding:6px 9px;border-radius:999px;background:#fff;border:1px solid var(--border)}
+.lesson-meta{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0}
+.meta-pill{font-size:13px;font-weight:850;border-radius:999px;padding:6px 9px;background:#fff;border:1px solid var(--border)}
+.lesson-progress{height:12px;background:#efeaf6;border-radius:999px;overflow:hidden}
+.lesson-progress>div{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink),var(--yellow))}
+.home-bottom{margin-top:14px;display:flex;justify-content:center}
+
+/* LESSON */
+.lesson-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.lesson-head-left{display:flex;align-items:center;gap:10px}
+.backbtn{border:1px solid var(--border);background:#fff;border-radius:14px;min-height:44px;padding:9px 12px;font-weight:900}
+.lesson-head h2{margin:0}
+.progress{height:14px;background:#eeeaf6;border-radius:999px;overflow:hidden;margin-top:10px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink),var(--yellow))}
+.modes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0}
+.mode{min-height:68px;border:1px solid var(--border);border-radius:18px;background:#fff;color:var(--ink);font-weight:900;padding:8px}
+.mode:nth-child(1){background:var(--purpleSoft)}
+.mode:nth-child(2){background:var(--skySoft)}
+.mode:nth-child(3){background:var(--yellowSoft)}
+.mode:nth-child(4){background:var(--mintSoft)}
+.mode:nth-child(5){background:var(--pinkSoft)}
+.mode:nth-child(6){background:#fff5e7}
+.mode:nth-child(7){background:#eef8ff}
+.mode:nth-child(8){background:#f6f0ff}
+.mode:nth-child(9){background:#fff0f6}
+.mode.active{outline:3px solid var(--purple);outline-offset:1px;transform:translateY(-1px)}
+.lesson-layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:14px}
+.activity{min-height:525px;display:flex;flex-direction:column;justify-content:center}
+.wordlist h3{margin:0 0 6px}
+.wordbtn{width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:13px;padding:10px 12px;margin:5px 0;font-weight:850;color:var(--ink)}
+.wordbtn.active{background:var(--purpleSoft);border-color:var(--purple)}
+.wordbtn.mastered::before{content:"⭐ "}
+.wordbtn.review::after{content:" • review";color:var(--danger);font-size:11px;font-weight:900}
+.bigword{text-align:center;font-size:clamp(48px,10vw,82px);font-weight:950;margin:12px 0;overflow-wrap:anywhere}
+.chunks{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.chunk{font-size:25px;font-weight:950;padding:10px 14px;border-radius:14px;background:#faf8ff;border:1px solid var(--border)}
+.answerbox,.tilebox{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:14px 0;min-height:64px}
+.answerbox{border:2px dashed var(--border);border-radius:16px;padding:10px}
+.letter{min-width:54px;min-height:54px;border:0;border-radius:14px;background:var(--purpleSoft);font-size:26px;font-weight:950;color:var(--ink)}
+.spellinput{display:block;margin:12px auto 0;width:min(100%,430px);font-size:34px;text-align:center;font-weight:950;letter-spacing:.07em;padding:12px;border:2px solid var(--border);border-radius:16px;color:var(--ink)}
+.feedback{min-height:30px;text-align:center;font-size:18px;font-weight:900;margin-top:10px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:580px;margin:18px auto}
+.choice{min-height:60px;border:2px solid var(--border);background:#fff;border-radius:16px;font-weight:900;font-size:20px;color:var(--ink)}
+
+/* SENTENCE BUILDER */
+.sentence-target{display:inline-block;background:var(--yellowSoft);border:1px solid #ead16b;padding:7px 12px;border-radius:999px;font-weight:950;font-size:20px}
+.sentence-area{max-width:700px;margin:0 auto;width:100%}
+.sentence-box{min-height:72px;border:2px dashed var(--border);border-radius:18px;padding:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;margin:14px 0;background:#fffdf8}
+.sentence-tile{border:1px solid var(--border);background:#fff;border-radius:13px;padding:10px 13px;font-size:19px;font-weight:900;color:var(--ink)}
+.sentence-input{width:100%;padding:12px;border:2px solid var(--border);border-radius:14px;font-size:18px;color:var(--ink)}
+
+/* WORD SEARCH */
+.wordsearch-wrap{display:grid;gap:13px}
+.ws-grid{display:grid;gap:4px;justify-content:center;margin:6px auto;user-select:none;touch-action:manipulation}
+.ws-cell{width:41px;height:41px;border:1px solid var(--border);border-radius:9px;background:#fff;font-size:19px;font-weight:950;color:var(--ink);padding:0}
+.ws-cell.selected{background:var(--yellowSoft);border-color:#dfbd38}
+.ws-cell.found{background:var(--mintSoft);border-color:#57bc94}
+.word-bank{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+.bankword{padding:6px 10px;border:1px solid var(--border);border-radius:999px;font-weight:850;background:#f9f7fc}
+.bankword.done{text-decoration:line-through;opacity:.55}
+
+/* STORY */
+.storybook{max-width:760px;margin:0 auto;width:100%}
+.book-cover{text-align:center;border:2px solid #e0d5ff;border-radius:24px;padding:20px;background:linear-gradient(145deg,#f0eaff,#fff0f6,#fff7d7);margin-bottom:15px}
+.book-cover .icon{font-size:58px}
+.book-cover h2{font-size:clamp(28px,6vw,41px);margin:6px 0}
+.story-page{background:#fffdf9;border:2px solid #eee4d6;border-radius:22px;padding:22px;line-height:1.8;font-size:20px;box-shadow:inset 0 0 0 6px #fff8ee}
+.targetword{border:0;background:var(--yellowSoft);color:var(--ink);font-weight:950;border-radius:8px;padding:1px 5px;display:inline;min-height:auto}
+.question{background:var(--skySoft);border:1px solid #d7eaff;border-radius:18px;padding:14px;margin-top:10px}
+.qchoice{display:block;width:100%;text-align:left;border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 12px;margin-top:7px;font-weight:850;color:var(--ink)}
+.story-complete{margin-top:14px;background:linear-gradient(145deg,var(--mintSoft),var(--yellowSoft));border:2px solid #cde7d6;border-radius:20px;padding:16px;text-align:center}
+
+/* SMART REVIEW */
+.review-panel{max-width:720px;margin:0 auto;width:100%}
+.review-card{border:2px solid #f0c6d5;background:#fff7fa;border-radius:22px;padding:20px;text-align:center}
+.review-word{font-size:clamp(45px,9vw,72px);font-weight:950;margin:10px 0}
+.review-stat{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.review-pill{font-size:13px;font-weight:900;padding:6px 9px;border-radius:999px;background:#fff;border:1px solid var(--border)}
+
+/* PARENT */
+.parentbar{display:flex;justify-content:center;margin-top:14px}
+dialog{border:0;border-radius:22px;max-width:880px;width:calc(100% - 24px);padding:0;box-shadow:0 18px 60px rgba(25,19,54,.24)}
+dialog::backdrop{background:rgba(34,27,61,.45)}
+.modal{padding:18px}
+.modalhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modalhead h2{margin:0}
+.close{border:0;background:#f2eff8;border-radius:12px;min-width:44px;min-height:44px;font-weight:950}
+.field{margin-top:12px}
+.field label{display:block;margin-bottom:6px;font-weight:900}
+.field input,.field textarea,.field select{width:100%;padding:11px;border:1px solid var(--border);border-radius:12px;background:#fff;color:var(--ink);font-size:16px}
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lesson-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.lesson-tab{border:1px solid var(--border);background:#fff;border-radius:12px;padding:9px 12px;font-weight:850}
+.lesson-tab.active{background:var(--purpleSoft);border-color:var(--purple)}
+.word-edit-row{display:grid;grid-template-columns:1fr 1fr 1.4fr auto;gap:8px;align-items:center;margin-top:8px}
+.word-edit-row input{width:100%;padding:10px;border:1px solid var(--border);border-radius:11px}
+.question-editor{border:1px solid var(--border);border-radius:16px;padding:12px;margin-top:10px;background:#fbfaff}
+hr{border:0;border-top:1px solid var(--border);margin:20px 0}
+
+@media(max-width:940px){
+  .modes{grid-template-columns:repeat(3,1fr)}
+  .lesson-layout{grid-template-columns:1fr}
+  .wordlist{order:-1}
+  .word-grid-mobile{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+  .wordbtn{margin:0}
+  .word-edit-row{grid-template-columns:1fr 1fr}
+}
+@media(max-width:660px){
+  .lesson-grid{grid-template-columns:1fr}
+  .modes{grid-template-columns:repeat(2,1fr)}
+  .choices,.editor-grid{grid-template-columns:1fr}
+  .word-edit-row{grid-template-columns:1fr}
+  .ws-cell{width:33px;height:33px;font-size:16px;border-radius:7px}
+  .story-page{font-size:18px;padding:16px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hero">
+    <div class="brand">
+      <div class="mascot" aria-hidden="true">🐱</div>
+      <div>
+        <h1>Word Power! ⭐</h1>
+        <p>Read it • build it • spell it • use it</p>
+      </div>
+    </div>
+    <div class="stars" id="starPill">0 ⭐</div>
+  </header>
+
+  <section id="homeScreen">
+    <div class="card">
+      <h2 class="home-title">Ready to practice? 🌈</h2>
+      <div class="small">Choose a lesson. New teacher lists can be added anytime in the Parent / Teacher Area.</div>
+      <div class="lesson-grid" id="lessonGrid"></div>
+    </div>
+    <div class="home-bottom">
+      <button class="soft" id="homeParentBtn">🔒 Parent / Teacher Area</button>
+    </div>
+  </section>
+
+  <section id="lessonScreen" class="hidden">
+    <div class="card">
+      <div class="lesson-head">
+        <div class="lesson-head-left">
+          <button class="backbtn" id="backHome">← Home</button>
+          <div>
+            <h2 id="lessonTitle">Lesson</h2>
+            <div class="small" id="lessonSub"></div>
+          </div>
+        </div>
+        <strong id="masteryText"></strong>
+      </div>
+      <div class="progress"><div id="progressFill"></div></div>
+    </div>
+
+    <div class="modes">
+      <button class="mode active" data-mode="learn">👀<br>Learn</button>
+      <button class="mode" data-mode="sound">🔊<br>Sound Out</button>
+      <button class="mode" data-mode="build">🧩<br>Build Word</button>
+      <button class="mode" data-mode="spell">✏️<br>Spell</button>
+      <button class="mode" data-mode="sentence">📝<br>Sentence</button>
+      <button class="mode" data-mode="wordsearch">🔎<br>Word Search</button>
+      <button class="mode" data-mode="quiz">🏆<br>Quiz</button>
+      <button class="mode" data-mode="review">💡<br>Smart Review</button>
+      <button class="mode" data-mode="story">📖<br>Story Time</button>
+    </div>
+
+    <div class="lesson-layout">
+      <main class="card activity" id="activity" aria-live="polite"></main>
+      <aside class="card wordlist">
+        <h3 id="listHeading">🌈 This Lesson</h3>
+        <div class="small">Tap a word to practice it.</div>
+        <div id="wordList" class="word-grid-mobile" style="margin-top:10px"></div>
+      </aside>
+    </div>
+
+    <div class="parentbar">
+      <button class="soft" id="lessonParentBtn">🔒 Parent / Teacher Area</button>
+    </div>
+  </section>
+</div>
+
+<dialog id="pinDialog">
+  <div class="modal">
+    <div class="modalhead">
+      <h2>Parent / Teacher</h2>
+      <button class="close" data-close="pinDialog" aria-label="Close">✕</button>
+    </div>
+    <form id="pinForm">
+      <div class="field">
+        <label for="pinInput">Enter 4-digit PIN</label>
+        <input id="pinInput" inputmode="numeric" maxlength="4" autocomplete="off">
+        <div class="small">Default PIN: 1234</div>
+      </div>
+      <div class="feedback" id="pinFeedback"></div>
+      <div class="btnrow"><button class="primary" type="submit">Open Parent Area</button></div>
+    </form>
+  </div>
+</dialog>
+
+<dialog id="parentDialog">
+  <div class="modal">
+    <div class="modalhead">
+      <h2>Parent / Teacher Area</h2>
+      <button class="close" data-close="parentDialog" aria-label="Close">✕</button>
+    </div>
+
+    <div class="lesson-tabs" id="lessonTabs"></div>
+    <div class="btnrow" style="justify-content:flex-start">
+      <button type="button" class="soft" id="addLessonBtn">＋ Add Lesson</button>
+      <button type="button" class="danger" id="deleteLessonBtn">Delete Current Lesson</button>
+    </div>
+
+    <div class="editor-grid">
+      <div class="field">
+        <label for="editLessonName">Lesson name</label>
+        <input id="editLessonName">
+      </div>
+      <div class="field">
+        <label for="editLessonType">Lesson type</label>
+        <select id="editLessonType">
+          <option value="hfw">High-Frequency Words</option>
+          <option value="spelling">Spelling Words</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="editor-grid">
+      <div class="field">
+        <label for="editTestDate">Test date</label>
+        <input id="editTestDate" type="date">
+      </div>
+      <div class="field">
+        <label for="lessonNote">Optional note</label>
+        <input id="lessonNote" placeholder="e.g., Teacher list #3">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Words, sound chunks & practice sentences</label>
+      <div class="small">The practice sentence is used in Sentence Builder. You can change any sentence.</div>
+      <div id="wordEditor"></div>
+      <div class="btnrow" style="justify-content:flex-start">
+        <button type="button" class="soft" id="addWordBtn">＋ Add Word</button>
+      </div>
+    </div>
+
+    <hr>
+
+    <h3>📖 Story Time</h3>
+    <div class="small">Weekly words are highlighted automatically when they appear in the story.</div>
+    <div class="field">
+      <label for="storyTitle">Story title</label>
+      <input id="storyTitle">
+    </div>
+    <div class="field">
+      <label for="storyText">Story</label>
+      <textarea id="storyText" rows="8"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Comprehension questions</label>
+      <div id="questionEditor"></div>
+    </div>
+
+    <hr>
+
+    <div class="editor-grid">
+      <div class="field">
+        <label for="newPin">Change parent PIN</label>
+        <input id="newPin" inputmode="numeric" maxlength="4" placeholder="4 digits">
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button type="button" class="soft" id="savePinBtn" style="width:100%">Save PIN</button>
+      </div>
+    </div>
+
+    <div class="btnrow">
+      <button type="button" class="primary" id="saveLessonBtn">Save Changes</button>
+      <button type="button" class="danger" id="resetProgressBtn">Reset Lesson Progress</button>
+    </div>
+    <div class="feedback" id="parentFeedback"></div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+const APP_KEY="wordPowerDataV4";
+
+const DEFAULT={
+  pin:"1234",stars:0,currentLesson:0,
+  lessons:[
+    {
+      name:"HFWs • Set 1",type:"hfw",testDate:"2026-09-10",note:"",
+      words:[
+        {text:"doing",chunks:"do-ing",sentence:"I am doing my homework."},
+        {text:"myself",chunks:"my-self",sentence:"I can do it by myself."},
+        {text:"yourself",chunks:"your-self",sentence:"You can make it yourself."},
+        {text:"really",chunks:"real-ly",sentence:"I really like this book."},
+        {text:"family",chunks:"fam-i-ly",sentence:"My family eats dinner together."},
+        {text:"since",chunks:"since",sentence:"I have known her since first grade."},
+        {text:"answer",chunks:"an-swer",sentence:"I know the answer."},
+        {text:"understand",chunks:"un-der-stand",sentence:"I understand the directions."},
+        {text:"clothes",chunks:"clothes",sentence:"My clothes are in the closet."},
+        {text:"picture",chunks:"pic-ture",sentence:"I drew a picture of my cat."}
+      ],
+      mastered:[],misses:{},
+      story:{
+        title:"The Family Picture",
+        text:"My family was doing something special. We wanted to make a picture by ourselves. “Do you understand what to do?” Mom asked. “I really do!” I said. I chose my clothes and got ready. Since everyone had a job, we finished quickly. My brother wanted to do his part himself, and I helped myself too. When Dad asked a question, I knew the answer. At the end, we looked at the picture and smiled.",
+        questions:[
+          {q:"What was the family making?",choices:["A picture","A kite","A cake"],answer:0},
+          {q:"Who asked if everyone understood what to do?",choices:["Mom","A teacher","A neighbor"],answer:0},
+          {q:"How did the family feel at the end?",choices:["Happy","Angry","Sleepy"],answer:0}
+        ]
+      },storyCompleted:false
+    },
+    {
+      name:"Spelling Words • Set 1",type:"spelling",testDate:"2026-09-18",note:"",
+      words:[
+        {text:"over",chunks:"o-ver",sentence:"The bird flew over the tree."},
+        {text:"new",chunks:"new",sentence:"I have a new pencil."},
+        {text:"take",chunks:"take",sentence:"Please take your book."},
+        {text:"only",chunks:"on-ly",sentence:"I only need one crayon."},
+        {text:"park",chunks:"park",sentence:"We play at the park."},
+        {text:"hard",chunks:"hard",sentence:"I worked hard on my project."},
+        {text:"barn",chunks:"barn",sentence:"The horse sleeps in the barn."},
+        {text:"card",chunks:"card",sentence:"I made a card for my friend."},
+        {text:"shark",chunks:"shark",sentence:"The shark swam in the ocean."},
+        {text:"dark",chunks:"dark",sentence:"The room was dark at night."},
+        {text:"date",chunks:"date",sentence:"I wrote the date on my paper."},
+        {text:"hold",chunks:"hold",sentence:"Please hold my hand."}
+      ],
+      mastered:[],misses:{},
+      story:{
+        title:"A New Day at the Park",
+        text:"We went to the park on a new day. I had to take only one small bag. Inside was a card I made for my friend. We walked over a bridge and saw a picture of a shark on a sign. Later, we visited a little barn. It was not dark inside. I worked hard to hold the gate open. Before we left, Dad checked the date on our ticket.",
+        questions:[
+          {q:"Where did they go?",choices:["The park","The beach","The library"],answer:0},
+          {q:"What was on the sign?",choices:["A shark","A whale","A dog"],answer:0},
+          {q:"What did the child hold open?",choices:["A gate","A window","A box"],answer:0}
+        ]
+      },storyCompleted:false
+    }
+  ]
+};
+
+function clone(v){return JSON.parse(JSON.stringify(v))}
+function normalizeLesson(l,i){
+  l.name=l.name||`Lesson ${i+1}`;l.type=l.type==="spelling"?"spelling":"hfw";l.testDate=l.testDate||"";l.note=l.note||"";
+  l.words=Array.isArray(l.words)?l.words:[];
+  l.words=l.words.map(w=>({text:(w.text||"").toLowerCase(),chunks:w.chunks||"",sentence:w.sentence||`I can use ${w.text||"this word"} in a sentence.`}));
+  l.mastered=Array.isArray(l.mastered)?l.mastered:[];
+  l.misses=l.misses&&typeof l.misses==="object"?l.misses:{};
+  l.story=l.story||{title:`Lesson ${i+1} Story`,text:"",questions:[]};
+  l.story.title=l.story.title||`Lesson ${i+1} Story`;l.story.text=l.story.text||"";
+  l.story.questions=Array.isArray(l.story.questions)?l.story.questions:[];
+  while(l.story.questions.length<3)l.story.questions.push({q:"",choices:["","",""],answer:0});
+  l.story.questions=l.story.questions.slice(0,3).map(q=>({q:q.q||"",choices:Array.isArray(q.choices)?[...q.choices,"","",""].slice(0,3):["","",""],answer:Math.max(0,Math.min(2,Number(q.answer)||0))}));
+  l.storyCompleted=!!l.storyCompleted;
+  return l;
+}
+function loadData(){
+  try{
+    const p=JSON.parse(localStorage.getItem(APP_KEY));
+    if(p&&Array.isArray(p.lessons)&&p.lessons.length){p.lessons=p.lessons.map(normalizeLesson);p.stars=Number(p.stars)||0;return p}
+  }catch(e){}
+  return clone(DEFAULT)
+}
+let data=loadData(),lessonIndex=data.currentLesson||0,wordIndex=0,mode="learn",editingLesson=lessonIndex;
+const $=s=>document.querySelector(s);
+
+function save(){localStorage.setItem(APP_KEY,JSON.stringify(data))}
+function lesson(){return data.lessons[lessonIndex]}
+function cw(){return lesson().words[wordIndex]||{text:"",chunks:"",sentence:""}}
+function esc(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+function formatDate(s){
+  if(!s)return "No test date";
+  const [y,m,d]=s.split("-").map(Number);if(!y||!m||!d)return s;
+  return new Intl.DateTimeFormat(undefined,{month:"short",day:"numeric",year:"numeric"}).format(new Date(Date.UTC(y,m-1,d)));
+}
+function speak(text){
+  if(!("speechSynthesis" in window))return;
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.72;u.pitch=1.04;speechSynthesis.speak(u)
+}
+function chunks(w){return(w.chunks||w.text.split("").join("-")).split("-").map(x=>x.trim()).filter(Boolean)}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function missCount(word){return Number(lesson().misses[word]||0)}
+function addMiss(word){
+  lesson().misses[word]=(lesson().misses[word]||0)+1;
+  const idx=lesson().mastered.indexOf(word);
+  if(idx>=0&&lesson().misses[word]>=2)lesson().mastered.splice(idx,1);
+  save();renderWordList();renderHome()
+}
+function markMastered(word,reward=1){
+  if(!lesson().mastered.includes(word)){lesson().mastered.push(word);data.stars+=reward}
+  if(lesson().misses[word])lesson().misses[word]=Math.max(0,lesson().misses[word]-1);
+  save();renderHeader();renderWordList();renderHome()
+}
+function totalMisses(l){return Object.values(l.misses||{}).reduce((a,b)=>a+Number(b||0),0)}
+function reviewWords(l){return l.words.filter(w=>(l.misses[w.text]||0)>0).sort((a,b)=>(l.misses[b.text]||0)-(l.misses[a.text]||0))}
+function lessonProgress(l){return l.words.length?Math.round((l.mastered||[]).length/l.words.length*100):0}
+
+function renderHome(){
+  $("#starPill").textContent=`${data.stars||0} ⭐`;
+  const grid=$("#lessonGrid");grid.innerHTML="";
+  data.lessons.forEach((l,i)=>{
+    const card=document.createElement("article");
+    card.className=`lesson-card ${l.type}`;
+    const icon=l.type==="hfw"?"📚":"✏️";
+    const typeName=l.type==="hfw"?"High-Frequency Words":"Spelling Words";
+    const reviews=reviewWords(l).length;
+    card.innerHTML=`
+      <div class="lesson-top">
+        <div><div class="lesson-icon">${icon}</div><h2>${esc(l.name)}</h2><div class="small">${typeName}</div></div>
+        <div class="lesson-date">🗓 ${esc(formatDate(l.testDate))}</div>
+      </div>
+      <div class="lesson-meta">
+        <span class="meta-pill">${l.words.length} words</span>
+        <span class="meta-pill">⭐ ${(l.mastered||[]).length} mastered</span>
+        ${reviews?`<span class="meta-pill">💡 ${reviews} to review</span>`:""}
+      </div>
+      <div class="lesson-progress"><div style="width:${lessonProgress(l)}%"></div></div>
+      <div class="btnrow"><button type="button" class="primary openLesson">Practice →</button></div>`;
+    card.querySelector(".openLesson").addEventListener("click",()=>openLesson(i));
+    grid.appendChild(card)
+  })
+}
+function openLesson(i){
+  lessonIndex=i;data.currentLesson=i;wordIndex=0;mode="learn";save();
+  $("#homeScreen").classList.add("hidden");$("#lessonScreen").classList.remove("hidden");render()
+}
+function goHome(){
+  $("#lessonScreen").classList.add("hidden");$("#homeScreen").classList.remove("hidden");
+  if("speechSynthesis"in window)speechSynthesis.cancel();renderHome()
+}
+
+function renderHeader(){
+  const l=lesson();$("#starPill").textContent=`${data.stars||0} ⭐`;
+  $("#lessonTitle").textContent=`${l.type==="hfw"?"📚":"✏️"} ${l.name}`;
+  $("#lessonSub").textContent=`${l.type==="hfw"?"High-Frequency Words":"Spelling Words"} • Test: ${formatDate(l.testDate)}`;
+  $("#masteryText").textContent=`${l.mastered.length} of ${l.words.length} mastered`;
+  $("#progressFill").style.width=`${lessonProgress(l)}%`;
+  $("#listHeading").textContent=l.type==="hfw"?"🌈 HFWs":"🌈 Spelling Words"
+}
+function renderWordList(){
+  const box=$("#wordList");box.innerHTML="";
+  const done=new Set(lesson().mastered);
+  lesson().words.forEach((w,i)=>{
+    const b=document.createElement("button");b.type="button";
+    b.className="wordbtn"+(i===wordIndex?" active":"")+(done.has(w.text)?" mastered":"")+(missCount(w.text)>0?" review":"");
+    b.textContent=w.text;b.addEventListener("click",()=>{wordIndex=i;mode="learn";render()});box.appendChild(b)
+  })
+}
+function nav(){
+  return `<div class="btnrow"><button type="button" class="soft" id="prevWord">← Previous</button><button type="button" class="primary" id="nextWord">Next →</button></div>`
+}
+function navEvents(){
+  $("#prevWord")?.addEventListener("click",()=>{wordIndex=(wordIndex-1+lesson().words.length)%lesson().words.length;render()});
+  $("#nextWord")?.addEventListener("click",()=>{wordIndex=(wordIndex+1)%lesson().words.length;render()})
+}
+
+function learnView(){
+  const w=cw(),cs=chunks(w);
+  $("#activity").innerHTML=`<div class="label">YOUR WORD</div><div class="bigword">${esc(w.text)}</div>
+  <div class="center"><button class="primary" id="hear">🔊 Hear the word</button></div>
+  <div class="chunks">${cs.map(c=>`<span class="chunk">${esc(c)}</span>`).join("")}</div>
+  <div class="center small">Say each part slowly, then blend the whole word.</div>
+  <div class="btnrow"><button class="secondary" id="know">⭐ I know this word!</button></div>${nav()}`;
+  $("#hear").addEventListener("click",()=>speak(w.text));$("#know").addEventListener("click",()=>{markMastered(w.text,1);$("#activity").insertAdjacentHTML("afterbegin","<div class='center' style='font-size:55px'>🌟</div>")});navEvents()
+}
+function soundView(){
+  const w=cw(),cs=chunks(w);
+  $("#activity").innerHTML=`<div class="label">SOUND IT OUT</div><div class="bigword" style="font-size:clamp(40px,8vw,65px)">${esc(w.text)}</div>
+  <div class="chunks">${cs.map(c=>`<button type="button" class="chunk" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
+  <div class="center small">Tap a chunk to hear it.</div>
+  <div class="btnrow"><button class="soft" id="slow">🐢 Say Slowly</button><button class="primary" id="blend">✨ Blend Word</button></div>${nav()}`;
+  document.querySelectorAll("[data-c]").forEach(b=>b.addEventListener("click",()=>speak(b.dataset.c)));
+  $("#slow").addEventListener("click",()=>cs.forEach((c,i)=>setTimeout(()=>speak(c),i*750)));
+  $("#blend").addEventListener("click",()=>speak(w.text));navEvents()
+}
+function buildView(){
+  const w=cw();let pool=shuffle(w.text.split("")),built="";
+  $("#activity").innerHTML=`<div class="label">BUILD THE WORD</div><div class="center"><button class="soft" id="hearBuild">🔊 Hear it</button></div>
+  <div class="answerbox" id="builtBox"><span class="small">Tap the letters below</span></div><div class="tilebox" id="tiles"></div>
+  <div class="feedback" id="buildFb"></div><div class="btnrow"><button class="soft" id="clearBuild">Start Over</button></div>${nav()}`;
+  const draw=()=>{
+    $("#builtBox").innerHTML=built?built.split("").map(x=>`<span class="chunk">${esc(x)}</span>`).join(""):`<span class="small">Tap the letters below</span>`;
+    $("#tiles").innerHTML="";
+    pool.forEach((letter,i)=>{
+      const b=document.createElement("button");b.type="button";b.className="letter";b.textContent=letter;
+      b.addEventListener("click",()=>{built+=letter;pool.splice(i,1);draw();if(built.length===w.text.length){if(built===w.text){$("#buildFb").textContent="🎉 Great job! +2 ⭐";markMastered(w.text,2)}else{$("#buildFb").textContent="Almost! Try again.";addMiss(w.text)}}});$("#tiles").appendChild(b)
+    })
+  };
+  draw();$("#hearBuild").addEventListener("click",()=>speak(w.text));$("#clearBuild").addEventListener("click",()=>{pool=shuffle(w.text.split(""));built="";$("#buildFb").textContent="";draw()});navEvents()
+}
+function spellView(){
+  const w=cw();
+  $("#activity").innerHTML=`<div class="label">LISTEN & SPELL</div><div class="center" style="margin-top:12px"><button class="primary" id="hearSpell">🔊 Hear the word</button></div>
+  <div class="center small" style="margin-top:14px">Type the word you hear.</div><input id="spellInput" class="spellinput" autocomplete="off" autocapitalize="none" spellcheck="false">
+  <div class="btnrow"><button class="secondary" id="checkSpell">Check My Spelling</button></div><div class="feedback" id="spellFb"></div>${nav()}`;
+  const check=()=>{
+    const a=$("#spellInput").value.trim().toLowerCase();if(!a){$("#spellFb").textContent="Type the word first 🙂";return}
+    if(a===w.text){$("#spellFb").textContent="🎉 Correct! +3 ⭐";markMastered(w.text,3)}
+    else{$("#spellFb").textContent="Good try! This word was added to Smart Review.";addMiss(w.text);speak(w.text)}
+  };
+  $("#hearSpell").addEventListener("click",()=>speak(w.text));$("#checkSpell").addEventListener("click",check);$("#spellInput").addEventListener("keydown",e=>{if(e.key==="Enter")check()});navEvents();setTimeout(()=>speak(w.text),120)
+}
+function sentenceView(){
+  const w=cw(),sentence=(w.sentence||`I can use ${w.text} in a sentence.`).trim();
+  const tokens=sentence.match(/[A-Za-z']+|[.,!?]/g)||[];
+  const shuffled=shuffle(tokens);
+  let built=[];
+  $("#activity").innerHTML=`<div class="sentence-area">
+    <div class="label">SENTENCE BUILDER</div>
+    <div class="center" style="margin-top:8px"><span class="sentence-target">${esc(w.text)}</span></div>
+    <h3 class="center" style="margin-bottom:6px">Build the sentence 🧩</h3>
+    <div class="center small">Tap the words in the correct order. Look for a capital letter and punctuation!</div>
+    <div class="sentence-box" id="sentenceBuilt"><span class="small">Your sentence will appear here.</span></div>
+    <div class="tilebox" id="sentenceTiles"></div>
+    <div class="feedback" id="sentenceFb"></div>
+    <div class="btnrow"><button class="soft" id="hearSentence">🔊 Hear Sentence</button><button class="soft" id="resetSentence">Start Over</button></div>
+    <hr>
+    <h3 class="center">Now make your own sentence ✏️</h3>
+    <div class="small center">Use <strong>${esc(w.text)}</strong>. Try a capital letter and an ending mark.</div>
+    <input id="ownSentence" class="sentence-input" placeholder="Type your sentence here...">
+    <div class="btnrow"><button class="secondary" id="checkOwn">Check My Sentence</button></div>
+    <div class="feedback" id="ownFb"></div>${nav()}</div>`;
+  let remaining=[...shuffled];
+  const normalize=tokens=>tokens.join(" ").replace(/\s+([.,!?])/g,"$1").trim();
+  const target=normalize(tokens);
+  const draw=()=>{
+    $("#sentenceBuilt").innerHTML=built.length?built.map(x=>`<span class="sentence-tile">${esc(x)}</span>`).join(""):`<span class="small">Your sentence will appear here.</span>`;
+    $("#sentenceTiles").innerHTML="";
+    remaining.forEach((tok,i)=>{
+      const b=document.createElement("button");b.type="button";b.className="sentence-tile";b.textContent=tok;
+      b.addEventListener("click",()=>{built.push(tok);remaining.splice(i,1);draw();if(remaining.length===0){const made=normalize(built);if(made===target){$("#sentenceFb").textContent="🌟 Perfect sentence! +3 ⭐";markMastered(w.text,3)}else{$("#sentenceFb").textContent="Almost! Check the word order and punctuation.";addMiss(w.text)}}});$("#sentenceTiles").appendChild(b)
+    })
+  };
+  draw();
+  $("#hearSentence").addEventListener("click",()=>speak(sentence));
+  $("#resetSentence").addEventListener("click",()=>{built=[];remaining=shuffle(tokens);$("#sentenceFb").textContent="";draw()});
+  $("#checkOwn").addEventListener("click",()=>{
+    const s=$("#ownSentence").value.trim();if(!s){$("#ownFb").textContent="Write a sentence first 🙂";return}
+    const hasWord=new RegExp(`\\b${w.text.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}\\b`,"i").test(s);
+    const capital=/^[A-Z]/.test(s),punct=/[.!?]$/.test(s);
+    if(hasWord&&capital&&punct){$("#ownFb").textContent=`🎉 Great sentence! You used “${w.text}.” +2 ⭐`;data.stars+=2;save();renderHeader();renderHome();speak(s)}
+    else{
+      const tips=[];if(!hasWord)tips.push(`use “${w.text}”`);if(!capital)tips.push("start with a capital");if(!punct)tips.push("add . ? or !");
+      $("#ownFb").textContent="Almost! Try to "+tips.join(", ")+"."
+    }
+  });
+  navEvents()
+}
+function generatePuzzle(words){
+  const clean=words.map(w=>w.toUpperCase().replace(/[^A-Z]/g,"")).filter(Boolean).slice(0,12),longest=Math.max(6,...clean.map(w=>w.length));
+  const size=Math.min(14,Math.max(8,longest+2,Math.ceil(Math.sqrt(clean.join("").length*2.2))));
+  const grid=Array.from({length:size},()=>Array(size).fill("")),dirs=[[0,1],[1,0],[1,1],[0,-1],[1,-1],[-1,1]];
+  for(const word of [...clean].sort((a,b)=>b.length-a.length)){
+    let ok=false;
+    for(let t=0;t<300&&!ok;t++){
+      const [dr,dc]=dirs[Math.floor(Math.random()*dirs.length)],r=Math.floor(Math.random()*size),c=Math.floor(Math.random()*size),er=r+dr*(word.length-1),ec=c+dc*(word.length-1);
+      if(er<0||er>=size||ec<0||ec>=size)continue;
+      let fits=true;for(let i=0;i<word.length;i++){const rr=r+dr*i,cc=c+dc*i;if(grid[rr][cc]&&grid[rr][cc]!==word[i]){fits=false;break}}
+      if(!fits)continue;for(let i=0;i<word.length;i++)grid[r+dr*i][c+dc*i]=word[i];ok=true
+    }
+  }
+  const abc="ABCDEFGHIJKLMNOPQRSTUVWXYZ";for(let r=0;r<size;r++)for(let c=0;c<size;c++)if(!grid[r][c])grid[r][c]=abc[Math.floor(Math.random()*abc.length)];
+  return{grid,size}
+}
+function wordSearchView(){
+  const words=lesson().words.map(w=>w.text),p=generatePuzzle(words);let selected=[],found=new Set();
+  $("#activity").innerHTML=`<div class="wordsearch-wrap"><div class="label">WORD SEARCH</div><h2 class="center" style="margin:4px 0">Find the words! 🔎</h2>
+  <div class="small center">Tap letters in a straight line.</div><div id="wsGrid" class="ws-grid"></div><div id="bank" class="word-bank"></div>
+  <div class="feedback" id="wsFb"></div><div class="btnrow"><button class="soft" id="newPuzzle">🔄 New Puzzle</button><button class="secondary" id="clearSel">Clear Selection</button></div></div>`;
+  const g=$("#wsGrid");g.style.gridTemplateColumns=`repeat(${p.size},auto)`;
+  p.grid.forEach((row,r)=>row.forEach((letter,c)=>{const b=document.createElement("button");b.type="button";b.className="ws-cell";b.textContent=letter;
+    b.addEventListener("click",()=>{const key=`${r},${c}`,at=selected.findIndex(x=>x.key===key);if(at>=0){selected=selected.slice(0,at);draw();return}selected.push({r,c,key,btn:b});draw();check()});g.appendChild(b)}));
+  words.forEach(w=>{const s=document.createElement("span");s.className="bankword";s.dataset.bank=w.toUpperCase();s.textContent=w;$("#bank").appendChild(s)});
+  function draw(){document.querySelectorAll(".ws-cell").forEach(x=>x.classList.remove("selected"));selected.forEach(x=>x.btn.classList.add("selected"))}
+  function line(){if(selected.length<2)return true;const dr=selected[1].r-selected[0].r,dc=selected[1].c-selected[0].c;if(Math.abs(dr)>1||Math.abs(dc)>1||(dr===0&&dc===0))return false;for(let i=2;i<selected.length;i++)if(selected[i].r-selected[i-1].r!==dr||selected[i].c-selected[i-1].c!==dc)return false;return true}
+  function check(){
+    if(!line()){$("#wsFb").textContent="Keep the letters in one straight line 🙂";return}
+    const text=selected.map(x=>p.grid[x.r][x.c]).join(""),rev=text.split("").reverse().join(""),match=words.find(w=>w.toUpperCase()===text||w.toUpperCase()===rev);
+    if(match&&!found.has(match)){found.add(match);selected.forEach(x=>x.btn.classList.add("found"));selected=[];draw();document.querySelector(`[data-bank="${match.toUpperCase()}"]`)?.classList.add("done");$("#wsFb").textContent=`🎉 You found ${match}!`;data.stars+=1;save();renderHeader();renderHome();if(found.size===words.length){data.stars+=3;save();renderHeader();renderHome();$("#wsFb").textContent="🌟 You found every word! +3 bonus stars"}}
+    else $("#wsFb").textContent=text?`You have: ${text}`:""
+  }
+  $("#clearSel").addEventListener("click",()=>{selected=[];draw();$("#wsFb").textContent=""});$("#newPuzzle").addEventListener("click",wordSearchView)
+}
+function quizView(){
+  const w=cw(),opts=shuffle([w.text,...shuffle(lesson().words.filter(x=>x.text!==w.text).map(x=>x.text)).slice(0,3)]);
+  $("#activity").innerHTML=`<div class="label">QUICK CHECK</div><h2 class="center">Which word do you hear?</h2><div class="center"><button class="primary" id="hearQuiz">🔊 Play Word</button></div>
+  <div class="choices" id="quizChoices"></div><div class="feedback" id="quizFb"></div>${nav()}`;
+  opts.forEach(o=>{const b=document.createElement("button");b.type="button";b.className="choice";b.textContent=o;b.addEventListener("click",()=>{if(o===w.text){$("#quizFb").textContent="🌟 Correct! +2 ⭐";markMastered(w.text,2)}else{$("#quizFb").textContent="Not quite — this word is going into Smart Review.";addMiss(w.text);speak(w.text)}});$("#quizChoices").appendChild(b)});
+  $("#hearQuiz").addEventListener("click",()=>speak(w.text));navEvents();setTimeout(()=>speak(w.text),120)
+}
+function reviewView(){
+  const reviews=reviewWords(lesson());
+  if(!reviews.length){
+    $("#activity").innerHTML=`<div class="review-panel"><div class="review-card"><div style="font-size:60px">🎉</div><h2>No review words right now!</h2><p>You haven't missed any words in this lesson. Keep practicing and Smart Review will collect any tricky words automatically.</p></div></div>`;return
+  }
+  let ri=0;
+  function show(){
+    const w=reviews[ri],count=missCount(w.text);
+    $("#activity").innerHTML=`<div class="review-panel"><div class="label">SMART REVIEW</div><div class="review-card">
+      <div class="small">This word came back because it was tricky before.</div><div class="review-word">${esc(w.text)}</div>
+      <div class="review-stat"><span class="review-pill">💡 Missed ${count} time${count===1?"":"s"}</span><span class="review-pill">📚 ${ri+1} of ${reviews.length}</span></div>
+      <div class="btnrow"><button class="soft" id="reviewHear">🔊 Hear It</button><button class="secondary" id="reviewSpell">✏️ Spell It</button></div>
+      <div id="reviewSpellArea" class="hidden"><input id="reviewInput" class="spellinput" autocomplete="off" autocapitalize="none" spellcheck="false"><div class="btnrow"><button class="primary" id="reviewCheck">Check</button></div></div>
+      <div class="feedback" id="reviewFb"></div>
+      <div class="btnrow"><button class="soft" id="reviewNext">Next Review Word →</button></div></div></div>`;
+    $("#reviewHear").addEventListener("click",()=>speak(w.text));
+    $("#reviewSpell").addEventListener("click",()=>{$("#reviewSpellArea").classList.remove("hidden");$("#reviewInput").focus();speak(w.text)});
+    $("#reviewCheck").addEventListener("click",()=>{
+      const a=$("#reviewInput").value.trim().toLowerCase();
+      if(a===w.text){$("#reviewFb").textContent="🌟 Correct! This word is getting stronger.";lesson().misses[w.text]=Math.max(0,count-1);if(lesson().misses[w.text]===0)markMastered(w.text,2);else{data.stars+=2;save();renderHeader();renderHome()}}
+      else{$("#reviewFb").textContent="Keep trying — listen again.";addMiss(w.text);speak(w.text)}
+    });
+    $("#reviewNext").addEventListener("click",()=>{ri=(ri+1)%reviews.length;show()})
+  }show()
+}
+function highlightStory(text,words){
+  const set=new Set(words.map(x=>x.toLowerCase()));
+  return String(text).split(/(\b[\w'-]+\b)/g).map(tok=>set.has(tok.toLowerCase())?`<button type="button" class="targetword" data-story-word="${esc(tok.toLowerCase())}">${esc(tok)}</button>`:esc(tok)).join("")
+}
+function storyView(){
+  const l=lesson(),s=l.story,answered=new Map();
+  $("#activity").innerHTML=`<div class="storybook"><div class="book-cover"><div class="icon">📖</div><div class="label">STORY TIME</div><h2>${esc(s.title)}</h2><div class="small">Tap a highlighted word to hear it.</div></div>
+  <div class="btnrow"><button class="primary" id="readStory">🔊 Read to Me</button><button class="soft" id="stopStory">⏹ Stop</button></div>
+  <div class="story-page">${highlightStory(s.text,l.words.map(w=>w.text))}</div>
+  <div style="margin-top:18px"><div class="label">STORY CHECK</div><h3 class="center">What do you remember? 🌟</h3><div id="questions"></div><div class="feedback" id="storyFb"></div><div id="storyDone"></div></div></div>`;
+  $("#readStory").addEventListener("click",()=>speak(s.text));$("#stopStory").addEventListener("click",()=>{"speechSynthesis"in window&&speechSynthesis.cancel()});document.querySelectorAll("[data-story-word]").forEach(b=>b.addEventListener("click",()=>speak(b.dataset.storyWord)));
+  s.questions.forEach((q,qi)=>{
+    const d=document.createElement("div");d.className="question";d.innerHTML=`<strong>${qi+1}. ${esc(q.q)}</strong><div></div>`;const box=d.querySelector("div");
+    q.choices.forEach((c,ci)=>{const b=document.createElement("button");b.type="button";b.className="qchoice";b.textContent=c;b.addEventListener("click",()=>{answered.set(qi,ci);[...box.children].forEach(x=>x.style.outline="");b.style.outline=ci===Number(q.answer)?"3px solid #57bc94":"3px solid #ff9cc3";$("#storyFb").textContent=ci===Number(q.answer)?"✅ Nice job!":"💛 Look back at the story and try again.";check()});box.appendChild(b)});$("#questions").appendChild(d)
+  });
+  function check(){
+    if(answered.size<s.questions.length)return;
+    const ok=s.questions.every((q,i)=>answered.get(i)===Number(q.answer));
+    if(ok){if(!l.storyCompleted){l.storyCompleted=true;data.stars+=5;save();renderHeader();renderHome()}$("#storyDone").innerHTML=`<div class="story-complete"><div style="font-size:48px">🎉📚⭐</div><strong>Story complete! +5 bonus stars</strong></div>`;$("#storyFb").textContent=""}
+  }
+  if(l.storyCompleted)$("#storyDone").innerHTML=`<div class="story-complete">📚⭐ <strong>You completed this story!</strong></div>`
+}
+
+function render(){
+  const l=lesson();
+  if(wordIndex>=Math.max(1,l.words.length))wordIndex=0;
+  renderHeader();renderWordList();
+  document.querySelectorAll(".mode").forEach(b=>b.classList.toggle("active",b.dataset.mode===mode));
+  if(!l.words.length&&!["story","review"].includes(mode)){$("#activity").innerHTML=`<div class="center"><h2>No words yet</h2><p class="small">Add words in the Parent / Teacher Area.</p></div>`;return}
+  ({learn:learnView,sound:soundView,build:buildView,spell:spellView,sentence:sentenceView,wordsearch:wordSearchView,quiz:quizView,review:reviewView,story:storyView})[mode]()
+}
+document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;render()}));
+$("#backHome").addEventListener("click",goHome);
+
+/* Parent controls */
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>document.getElementById(b.dataset.close).close()));
+function askPin(){$("#pinInput").value="";$("#pinFeedback").textContent="";$("#pinDialog").showModal()}
+$("#homeParentBtn").addEventListener("click",askPin);$("#lessonParentBtn").addEventListener("click",askPin);
+$("#pinForm").addEventListener("submit",e=>{e.preventDefault();if($("#pinInput").value===data.pin){$("#pinDialog").close();editingLesson=lessonIndex;renderParent();$("#parentDialog").showModal()}else $("#pinFeedback").textContent="That PIN didn't match."});
+
+function renderTabs(){
+  $("#lessonTabs").innerHTML="";
+  data.lessons.forEach((l,i)=>{const b=document.createElement("button");b.type="button";b.className="lesson-tab"+(i===editingLesson?" active":"");b.textContent=l.name;b.addEventListener("click",()=>{syncParent();editingLesson=i;renderParent()});$("#lessonTabs").appendChild(b)})
+}
+function renderWordEditor(){
+  const l=data.lessons[editingLesson];$("#wordEditor").innerHTML="";
+  l.words.forEach((w,i)=>{
+    const row=document.createElement("div");row.className="word-edit-row";
+    row.innerHTML=`<input data-word="${i}" aria-label="Word ${i+1}" value="${esc(w.text)}" placeholder="word">
+      <input data-chunks="${i}" aria-label="Sound chunks ${i+1}" value="${esc(w.chunks)}" placeholder="sound chunks">
+      <input data-sentence="${i}" aria-label="Sentence ${i+1}" value="${esc(w.sentence)}" placeholder="practice sentence">
+      <button type="button" class="danger" data-remove="${i}">Remove</button>`;
+    $("#wordEditor").appendChild(row)
+  });
+  document.querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{syncStoryOnly();data.lessons[editingLesson].words.splice(Number(b.dataset.remove),1);renderWordEditor()}))
+}
+function renderQuestions(){
+  const qs=data.lessons[editingLesson].story.questions;$("#questionEditor").innerHTML="";
+  qs.forEach((q,i)=>{
+    const d=document.createElement("div");d.className="question-editor";
+    d.innerHTML=`<div class="field"><label>Question ${i+1}</label><input data-q="${i}" value="${esc(q.q)}"></div>
+      <div class="editor-grid"><div class="field"><label>Choice 1</label><input data-qc="${i}-0" value="${esc(q.choices[0])}"></div><div class="field"><label>Choice 2</label><input data-qc="${i}-1" value="${esc(q.choices[1])}"></div></div>
+      <div class="editor-grid"><div class="field"><label>Choice 3</label><input data-qc="${i}-2" value="${esc(q.choices[2])}"></div><div class="field"><label>Correct answer</label><select data-qa="${i}">
+      <option value="0"${q.answer===0?" selected":""}>Choice 1</option><option value="1"${q.answer===1?" selected":""}>Choice 2</option><option value="2"${q.answer===2?" selected":""}>Choice 3</option></select></div></div>`;
+    $("#questionEditor").appendChild(d)
+  })
+}
+function syncStoryOnly(){
+  const l=data.lessons[editingLesson];if(!l)return;
+  if($("#storyTitle"))l.story.title=$("#storyTitle").value.trim();
+  if($("#storyText"))l.story.text=$("#storyText").value.trim();
+  document.querySelectorAll("[data-q]").forEach(x=>l.story.questions[Number(x.dataset.q)].q=x.value.trim());
+  document.querySelectorAll("[data-qc]").forEach(x=>{const [qi,ci]=x.dataset.qc.split("-").map(Number);l.story.questions[qi].choices[ci]=x.value.trim()});
+  document.querySelectorAll("[data-qa]").forEach(x=>l.story.questions[Number(x.dataset.qa)].answer=Number(x.value))
+}
+function syncParent(){
+  const l=data.lessons[editingLesson];if(!l)return;
+  l.name=$("#editLessonName")?.value.trim()||`Lesson ${editingLesson+1}`;
+  l.type=$("#editLessonType")?.value==="spelling"?"spelling":"hfw";
+  l.testDate=$("#editTestDate")?.value||"";l.note=$("#lessonNote")?.value.trim()||"";
+  const wins=[...document.querySelectorAll("[data-word]")];
+  if(wins.length){
+    l.words=wins.map(inp=>{const i=Number(inp.dataset.word);return{text:inp.value.trim().toLowerCase(),chunks:document.querySelector(`[data-chunks="${i}"]`)?.value.trim()||"",sentence:document.querySelector(`[data-sentence="${i}"]`)?.value.trim()||""}}).filter(x=>x.text);
+    l.mastered=l.mastered.filter(m=>l.words.some(w=>w.text===m))
+  }
+  syncStoryOnly()
+}
+function renderParent(){
+  const l=normalizeLesson(data.lessons[editingLesson],editingLesson);renderTabs();
+  $("#editLessonName").value=l.name;$("#editLessonType").value=l.type;$("#editTestDate").value=l.testDate;$("#lessonNote").value=l.note;$("#storyTitle").value=l.story.title;$("#storyText").value=l.story.text;$("#parentFeedback").textContent="";
+  renderWordEditor();renderQuestions()
+}
+$("#addWordBtn").addEventListener("click",()=>{syncParent();data.lessons[editingLesson].words.push({text:"",chunks:"",sentence:""});renderWordEditor();[...document.querySelectorAll("[data-word]")].at(-1)?.focus()});
+$("#saveLessonBtn").addEventListener("click",()=>{syncParent();lessonIndex=editingLesson;data.currentLesson=lessonIndex;wordIndex=0;save();$("#parentFeedback").textContent="Saved! The lesson is ready.";renderHome();if(!$("#lessonScreen").classList.contains("hidden"))render();renderParent()});
+$("#addLessonBtn").addEventListener("click",()=>{syncParent();const n=data.lessons.length+1;data.lessons.push(normalizeLesson({name:`Lesson ${n}`,type:"hfw",testDate:"",note:"",words:[],mastered:[],misses:{},story:{title:`Lesson ${n} Story`,text:"Write or paste a short story here.",questions:[{q:"What happened in the story?",choices:["Choice 1","Choice 2","Choice 3"],answer:0},{q:"Who was in the story?",choices:["Choice 1","Choice 2","Choice 3"],answer:0},{q:"How did the story end?",choices:["Choice 1","Choice 2","Choice 3"],answer:0}]},storyCompleted:false},n-1));editingLesson=data.lessons.length-1;renderParent()});
+$("#deleteLessonBtn").addEventListener("click",()=>{if(data.lessons.length===1){$("#parentFeedback").textContent="Keep at least one lesson.";return}data.lessons.splice(editingLesson,1);editingLesson=Math.max(0,editingLesson-1);lessonIndex=Math.min(lessonIndex,data.lessons.length-1);data.currentLesson=lessonIndex;save();renderParent();renderHome();if(!$("#lessonScreen").classList.contains("hidden"))render()});
+$("#resetProgressBtn").addEventListener("click",()=>{const l=data.lessons[editingLesson];l.mastered=[];l.misses={};l.storyCompleted=false;save();$("#parentFeedback").textContent="Progress and Smart Review have been reset.";renderHome();if(!$("#lessonScreen").classList.contains("hidden"))render()});
+$("#savePinBtn").addEventListener("click",()=>{const p=$("#newPin").value.trim();if(!/^\d{4}$/.test(p)){$("#parentFeedback").textContent="PIN must be exactly 4 numbers.";return}data.pin=p;save();$("#newPin").value="";$("#parentFeedback").textContent="Parent PIN updated."});
+
+renderHome();
+if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
+})();
+</script>
+</body>
+</html>

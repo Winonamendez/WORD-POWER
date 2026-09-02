@@ -1,0 +1,17 @@
+{
+  "name": "Word Power! Reading & Spelling Practice",
+  "short_name": "Word Power",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fffaf3",
+  "theme_color": "#8f6fff",
+  "description": "Kid-friendly high-frequency word and spelling practice with sentence building, smart review, word search, quizzes and Story Time.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
