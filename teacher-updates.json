@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "publishedVersion": 1,
+  "updatedAt": "2026-09-01",
+  "lessons": [
+    {
+      "id": "hfw-2026-09-10",
+      "updateVersion": 1,
+      "name": "HFWs • Set 1",
+      "type": "hfw",
+      "testDate": "2026-09-10",
+      "note": "",
+      "words": [
+        {
+          "text": "doing",
+          "chunks": "do-ing",
+          "sentence": "I am doing my homework."
+        },
+        {
+          "text": "myself",
+          "chunks": "my-self",
+          "sentence": "I can do it by myself."
+        },
+        {
+          "text": "yourself",
+          "chunks": "your-self",
+          "sentence": "You can make it yourself."
+        },
+        {
+          "text": "really",
+          "chunks": "real-ly",
+          "sentence": "I really like this book."
+        },
+        {
+          "text": "family",
+          "chunks": "fam-i-ly",
+          "sentence": "My family eats dinner together."
+        },
+        {
+          "text": "since",
+          "chunks": "since",
+          "sentence": "I have known her since first grade."
+        },
+        {
+          "text": "answer",
+          "chunks": "an-swer",
+          "sentence": "I know the answer."
+        },
+        {
+          "text": "understand",
+          "chunks": "un-der-stand",
+          "sentence": "I understand the directions."
+        },
+        {
+          "text": "clothes",
+          "chunks": "clothes",
+          "sentence": "My clothes are in the closet."
+        },
+        {
+          "text": "picture",
+          "chunks": "pic-ture",
+          "sentence": "I drew a picture of my cat."
+        }
+      ],
+      "story": {
+        "title": "The Family Picture",
+        "text": "My family was doing something special. We wanted to make a picture by ourselves. “Do you understand what to do?” Mom asked. “I really do!” I said. I chose my clothes and got ready. Since everyone had a job, we finished quickly. My brother wanted to do his part himself, and I helped myself too. When Dad asked a question, I knew the answer. At the end, we looked at the picture and smiled.",
+        "questions": [
+          {
+            "q": "What was the family making?",
+            "choices": [
+              "A picture",
+              "A kite",
+              "A cake"
+            ],
+            "answer": 0
+          },
+          {
+            "q": "Who asked if everyone understood what to do?",
+            "choices": [
+              "Mom",
+              "A teacher",
+              "A neighbor"
+            ],
+            "answer": 0
+          },
+          {
+            "q": "How did the family feel at the end?",
+            "choices": [
+              "Happy",
+              "Angry",
+              "Sleepy"
+            ],
+            "answer": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "spelling-2026-09-18",
+      "updateVersion": 1,
+      "name": "Spelling Words • Set 1",
+      "type": "spelling",
+      "testDate": "2026-09-18",
+      "note": "",
+      "words": [
+        {
+          "text": "over",
+          "chunks": "o-ver",
+          "sentence": "The bird flew over the tree."
+        },
+        {
+          "text": "new",
+          "chunks": "new",
+          "sentence": "I have a new pencil."
+        },
+        {
+          "text": "take",
+          "chunks": "take",
+          "sentence": "Please take your book."
+        },
+        {
+          "text": "only",
+          "chunks": "on-ly",
+          "sentence": "I only need one crayon."
+        },
+        {
+          "text": "park",
+          "chunks": "park",
+          "sentence": "We play at the park."
+        },
+        {
+          "text": "hard",
+          "chunks": "hard",
+          "sentence": "I worked hard on my project."
+        },
+        {
+          "text": "barn",
+          "chunks": "barn",
+          "sentence": "The horse sleeps in the barn."
+        },
+        {
+          "text": "card",
+          "chunks": "card",
+          "sentence": "I made a card for my friend."
+        },
+        {
+          "text": "shark",
+          "chunks": "shark",
+          "sentence": "The shark swam in the ocean."
+        },
+        {
+          "text": "dark",
+          "chunks": "dark",
+          "sentence": "The room was dark at night."
+        },
+        {
+          "text": "date",
+          "chunks": "date",
+          "sentence": "I wrote the date on my paper."
+        },
+        {
+          "text": "hold",
+          "chunks": "hold",
+          "sentence": "Please hold my hand."
+        }
+      ],
+      "story": {
+        "title": "A New Day at the Park",
+        "text": "We went to the park on a new day. I had to take only one small bag. Inside was a card I made for my friend. We walked over a bridge and saw a picture of a shark on a sign. Later, we visited a little barn. It was not dark inside. I worked hard to hold the gate open. Before we left, Dad checked the date on our ticket.",
+        "questions": [
+          {
+            "q": "Where did they go?",
+            "choices": [
+              "The park",
+              "The beach",
+              "The library"
+            ],
+            "answer": 0
+          },
+          {
+            "q": "What was on the sign?",
+            "choices": [
+              "A shark",
+              "A whale",
+              "A dog"
+            ],
+            "answer": 0
+          },
+          {
+            "q": "What did the child hold open?",
+            "choices": [
+              "A gate",
+              "A window",
+              "A box"
+            ],
+            "answer": 0
+          }
+        ]
+      }
+    }
+  ]
+}

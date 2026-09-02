@@ -1,60 +1,32 @@
-WORD POWER! VERSION 4
-=====================
+WORD POWER! VERSION 5 — TEACHER UPDATES
+========================================
 
-WHAT'S NEW
-- Separate lesson cards for High-Frequency Words and Spelling Words
-- Test dates shown on the home screen
-- Preloaded HFW list:
-  doing, myself, yourself, really, family, since, answer, understand, clothes, picture
-  Test date: September 10, 2026
-- Preloaded Spelling list:
-  over, new, take, only, park, hard, barn, card, shark, dark, date, hold
-  Test date: September 18, 2026
-- Sentence Builder:
-  * build a sentence from scrambled word tiles
-  * hear the sentence
-  * write an original sentence
-  * checks target word, capital letter, and punctuation
-- Smart Review:
-  * missed spelling/build/quiz words are automatically collected
-  * most-missed words appear first
-  * correct Smart Review attempts reduce the review count
-- Practice sentences are editable for every word
-- Parent area can add new HFW or Spelling lessons as teacher lists arrive
+UPLOAD/REPLACE THESE FILES IN THE ROOT OF YOUR EXISTING WORD-POWER GITHUB REPOSITORY:
+- index.html
+- manifest.json
+- service-worker.js
+- icon.svg
+- teacher-updates.json
 
-ALSO INCLUDED
-- Learn
-- Sound Out
-- Build Word
-- Spell
-- Word Search
-- Quiz
-- Story Time
-- Read-to-Me
-- Comprehension questions
-- Stars and mastery progress
-- Editable stories
-- Parent PIN
-- Offline PWA support after first hosted visit
+Version 5 adds a shared Teacher Updates feed while keeping each family's progress local to their own device.
 
-DEFAULT PARENT PIN
-1234
+IMPORTANT: Keep the SAME GitHub repository and Pages URL. Do not create a new Pages site.
 
-TEST LOCALLY
-1. Unzip this folder.
-2. Open a terminal in the folder.
-3. Run:
-   python -m http.server 8000
-4. Visit:
-   http://localhost:8000
+HOW TO ADD A FUTURE TEACHER LIST
+1. Edit teacher-updates.json on GitHub.
+2. Add a lesson with a permanent unique id, updateVersion 1, type hfw or spelling, testDate, words, and optional story.
+3. Commit the file.
+4. Families tap Check Teacher Updates in the app.
 
-PUBLISH
-Upload the contents of this Version 4 folder to GitHub Pages or Netlify.
+HOW TO CORRECT AN EXISTING SHARED LESSON
+- Keep the exact same id.
+- Increase updateVersion (for example 1 to 2).
+- Make the corrections and commit.
+- The app will show UPDATE instead of creating a duplicate.
 
-INSTALL
-iPhone/iPad: Safari > Share > Add to Home Screen
-Android: Chrome > menu > Install app / Add to Home screen
+PROGRESS
+- Stars, mastered words, Smart Review misses, and Story completion remain on each user's device.
+- Updating a teacher lesson preserves matching progress for words that remain in the lesson.
+- Version 4 browser data is migrated into Version 5 on the same GitHub Pages site.
 
-DATA
-Lesson lists, progress, Smart Review data, stories, PIN and stars are stored locally in the browser/device.
-Clearing browser site data will erase saved progress.
+DEFAULT PARENT PIN: 1234

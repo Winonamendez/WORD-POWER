@@ -156,6 +156,11 @@ dialog::backdrop{background:rgba(34,27,61,.45)}
 .question-editor{border:1px solid var(--border);border-radius:16px;padding:12px;margin-top:10px;background:#fbfaff}
 hr{border:0;border-top:1px solid var(--border);margin:20px 0}
 
+.teacher-update-item{border:1px solid var(--border);border-radius:16px;padding:12px;margin-top:8px;background:#fff}
+.teacher-update-item strong{display:block;margin-bottom:3px}
+.teacher-update-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.update-badge{display:inline-block;font-size:12px;font-weight:900;padding:4px 8px;border-radius:999px;background:var(--mintSoft);border:1px solid #b9ead6;margin-left:6px}
+
 @media(max-width:940px){
   .modes{grid-template-columns:repeat(3,1fr)}
   .lesson-layout{grid-template-columns:1fr}
@@ -182,7 +187,7 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
       <div class="mascot" aria-hidden="true">🐱</div>
       <div>
         <h1>Word Power! ⭐</h1>
-        <p>Read it • build it • spell it • use it</p>
+        <p>Read it • build it • spell it • use it • grow together</p>
       </div>
     </div>
     <div class="stars" id="starPill">0 ⭐</div>
@@ -193,6 +198,13 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
       <h2 class="home-title">Ready to practice? 🌈</h2>
       <div class="small">Choose a lesson. New teacher lists can be added anytime in the Parent / Teacher Area.</div>
       <div class="lesson-grid" id="lessonGrid"></div>
+    </div>
+    <div id="teacherUpdatePanel" class="card" style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div><strong>☁️ Teacher Updates</strong><div class="small" id="teacherUpdateStatus">Check for new HFW or spelling lessons shared through GitHub.</div></div>
+        <button class="mintbtn" id="checkUpdatesBtn">Check Teacher Updates</button>
+      </div>
+      <div id="teacherUpdateList" style="margin-top:10px"></div>
     </div>
     <div class="home-bottom">
       <button class="soft" id="homeParentBtn">🔒 Parent / Teacher Area</button>
@@ -267,6 +279,9 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
     </div>
 
     <div class="lesson-tabs" id="lessonTabs"></div>
+    <div class="btnrow" style="justify-content:flex-start">
+      <button type="button" class="mintbtn" id="parentCheckUpdatesBtn">☁️ Check Teacher Updates</button>
+    </div>
     <div class="btnrow" style="justify-content:flex-start">
       <button type="button" class="soft" id="addLessonBtn">＋ Add Lesson</button>
       <button type="button" class="danger" id="deleteLessonBtn">Delete Current Lesson</button>
@@ -347,13 +362,14 @@ hr{border:0;border-top:1px solid var(--border);margin:20px 0}
 
 <script>
 (() => {
-const APP_KEY="wordPowerDataV4";
+const APP_KEY="wordPowerDataV5";
+const OLD_APP_KEY="wordPowerDataV4";
 
 const DEFAULT={
   pin:"1234",stars:0,currentLesson:0,
   lessons:[
     {
-      name:"HFWs • Set 1",type:"hfw",testDate:"2026-09-10",note:"",
+      id:"hfw-2026-09-10",source:"teacher",updateVersion:1,name:"HFWs • Set 1",type:"hfw",testDate:"2026-09-10",note:"",
       words:[
         {text:"doing",chunks:"do-ing",sentence:"I am doing my homework."},
         {text:"myself",chunks:"my-self",sentence:"I can do it by myself."},
@@ -378,7 +394,7 @@ const DEFAULT={
       },storyCompleted:false
     },
     {
-      name:"Spelling Words • Set 1",type:"spelling",testDate:"2026-09-18",note:"",
+      id:"spelling-2026-09-18",source:"teacher",updateVersion:1,name:"Spelling Words • Set 1",type:"spelling",testDate:"2026-09-18",note:"",
       words:[
         {text:"over",chunks:"o-ver",sentence:"The bird flew over the tree."},
         {text:"new",chunks:"new",sentence:"I have a new pencil."},
@@ -410,6 +426,13 @@ const DEFAULT={
 function clone(v){return JSON.parse(JSON.stringify(v))}
 function normalizeLesson(l,i){
   l.name=l.name||`Lesson ${i+1}`;l.type=l.type==="spelling"?"spelling":"hfw";l.testDate=l.testDate||"";l.note=l.note||"";
+  if(!l.id){
+    if(l.type==="hfw"&&l.testDate==="2026-09-10") l.id="hfw-2026-09-10";
+    else if(l.type==="spelling"&&l.testDate==="2026-09-18") l.id="spelling-2026-09-18";
+    else l.id=`local-${Date.now()}-${i}-${Math.random().toString(36).slice(2,8)}`;
+  }
+  l.source=l.source||((l.id==="hfw-2026-09-10"||l.id==="spelling-2026-09-18")?"teacher":"local");
+  l.updateVersion=Number(l.updateVersion)||1;
   l.words=Array.isArray(l.words)?l.words:[];
   l.words=l.words.map(w=>({text:(w.text||"").toLowerCase(),chunks:w.chunks||"",sentence:w.sentence||`I can use ${w.text||"this word"} in a sentence.`}));
   l.mastered=Array.isArray(l.mastered)?l.mastered:[];
@@ -424,7 +447,12 @@ function normalizeLesson(l,i){
 }
 function loadData(){
   try{
-    const p=JSON.parse(localStorage.getItem(APP_KEY));
+    let raw=localStorage.getItem(APP_KEY);
+    if(!raw){
+      const old=localStorage.getItem(OLD_APP_KEY);
+      if(old){raw=old;localStorage.setItem(APP_KEY,old)}
+    }
+    const p=JSON.parse(raw);
     if(p&&Array.isArray(p.lessons)&&p.lessons.length){p.lessons=p.lessons.map(normalizeLesson);p.stars=Number(p.stars)||0;return p}
   }catch(e){}
   return clone(DEFAULT)
@@ -775,12 +803,43 @@ function renderParent(){
 }
 $("#addWordBtn").addEventListener("click",()=>{syncParent();data.lessons[editingLesson].words.push({text:"",chunks:"",sentence:""});renderWordEditor();[...document.querySelectorAll("[data-word]")].at(-1)?.focus()});
 $("#saveLessonBtn").addEventListener("click",()=>{syncParent();lessonIndex=editingLesson;data.currentLesson=lessonIndex;wordIndex=0;save();$("#parentFeedback").textContent="Saved! The lesson is ready.";renderHome();if(!$("#lessonScreen").classList.contains("hidden"))render();renderParent()});
-$("#addLessonBtn").addEventListener("click",()=>{syncParent();const n=data.lessons.length+1;data.lessons.push(normalizeLesson({name:`Lesson ${n}`,type:"hfw",testDate:"",note:"",words:[],mastered:[],misses:{},story:{title:`Lesson ${n} Story`,text:"Write or paste a short story here.",questions:[{q:"What happened in the story?",choices:["Choice 1","Choice 2","Choice 3"],answer:0},{q:"Who was in the story?",choices:["Choice 1","Choice 2","Choice 3"],answer:0},{q:"How did the story end?",choices:["Choice 1","Choice 2","Choice 3"],answer:0}]},storyCompleted:false},n-1));editingLesson=data.lessons.length-1;renderParent()});
+$("#addLessonBtn").addEventListener("click",()=>{syncParent();const n=data.lessons.length+1;data.lessons.push(normalizeLesson({id:`local-${Date.now()}-${Math.random().toString(36).slice(2,8)}`,source:"local",updateVersion:1,name:`Lesson ${n}`,type:"hfw",testDate:"",note:"",words:[],mastered:[],misses:{},story:{title:`Lesson ${n} Story`,text:"Write or paste a short story here.",questions:[{q:"What happened in the story?",choices:["Choice 1","Choice 2","Choice 3"],answer:0},{q:"Who was in the story?",choices:["Choice 1","Choice 2","Choice 3"],answer:0},{q:"How did the story end?",choices:["Choice 1","Choice 2","Choice 3"],answer:0}]},storyCompleted:false},n-1));editingLesson=data.lessons.length-1;renderParent()});
 $("#deleteLessonBtn").addEventListener("click",()=>{if(data.lessons.length===1){$("#parentFeedback").textContent="Keep at least one lesson.";return}data.lessons.splice(editingLesson,1);editingLesson=Math.max(0,editingLesson-1);lessonIndex=Math.min(lessonIndex,data.lessons.length-1);data.currentLesson=lessonIndex;save();renderParent();renderHome();if(!$("#lessonScreen").classList.contains("hidden"))render()});
 $("#resetProgressBtn").addEventListener("click",()=>{const l=data.lessons[editingLesson];l.mastered=[];l.misses={};l.storyCompleted=false;save();$("#parentFeedback").textContent="Progress and Smart Review have been reset.";renderHome();if(!$("#lessonScreen").classList.contains("hidden"))render()});
 $("#savePinBtn").addEventListener("click",()=>{const p=$("#newPin").value.trim();if(!/^\d{4}$/.test(p)){$("#parentFeedback").textContent="PIN must be exactly 4 numbers.";return}data.pin=p;save();$("#newPin").value="";$("#parentFeedback").textContent="Parent PIN updated."});
 
+
+let latestTeacherFeed=null;
+function mergeTeacherLesson(remote,existing=null){
+  const preserved={mastered:existing?.mastered?[...existing.mastered]:[],misses:existing?.misses?{...existing.misses}:{},storyCompleted:!!existing?.storyCompleted};
+  const incoming=normalizeLesson(clone({...remote,source:"teacher",mastered:preserved.mastered,misses:preserved.misses,storyCompleted:preserved.storyCompleted}),0);
+  incoming.id=remote.id;incoming.source="teacher";incoming.updateVersion=Number(remote.updateVersion)||1;
+  incoming.mastered=incoming.mastered.filter(m=>incoming.words.some(w=>w.text===m));
+  const nextMisses={};for(const w of incoming.words){if(preserved.misses[w.text])nextMisses[w.text]=preserved.misses[w.text]}incoming.misses=nextMisses;
+  return incoming
+}
+function teacherUpdateCandidates(feed){
+  if(!feed||!Array.isArray(feed.lessons))return[];
+  return feed.lessons.map(remote=>{const existing=data.lessons.find(l=>l.id===remote.id);if(!existing)return{kind:"new",remote};if((Number(remote.updateVersion)||1)>(Number(existing.updateVersion)||1))return{kind:"update",remote,existing};return{kind:"current",remote,existing}}).filter(x=>x.kind!=="current")
+}
+async function checkTeacherUpdates(showMessage=true){
+  const status=$("#teacherUpdateStatus"),list=$("#teacherUpdateList");if(status)status.textContent="Checking for teacher updates…";if(list)list.innerHTML="";
+  try{
+    const res=await fetch(`./teacher-updates.json?t=${Date.now()}`,{cache:"no-store"});if(!res.ok)throw new Error(`HTTP ${res.status}`);const feed=await res.json();latestTeacherFeed=feed;const candidates=teacherUpdateCandidates(feed);
+    if(!candidates.length){if(status)status.textContent="✅ You already have the newest teacher lessons.";if(showMessage&&$("#parentFeedback"))$("#parentFeedback").textContent="No new teacher updates right now.";return}
+    if(status)status.textContent=`🎒 ${candidates.length} teacher update${candidates.length===1?" is":"s are"} available.`;
+    if(list)candidates.forEach(item=>{const r=item.remote,div=document.createElement("div");div.className="teacher-update-item";div.innerHTML=`<strong>${r.type==="spelling"?"✏️":"📚"} ${esc(r.name||"Teacher Lesson")} <span class="update-badge">${item.kind==="new"?"NEW":"UPDATE"}</span></strong><div class="small">Test: ${esc(formatDate(r.testDate||""))} • ${(r.words||[]).length} words</div><div class="teacher-update-actions"><button type="button" class="mintbtn">${item.kind==="new"?"Add to My Lessons":"Update Lesson"}</button></div>`;div.querySelector("button").addEventListener("click",()=>{installTeacherLesson(r);checkTeacherUpdates(false)});list.appendChild(div)});
+    if(showMessage&&$("#parentFeedback"))$("#parentFeedback").textContent=`${candidates.length} teacher update${candidates.length===1?"":"s"} available on the Home screen.`
+  }catch(err){if(status)status.textContent="Could not reach Teacher Updates. Check your connection and try again.";if(showMessage&&$("#parentFeedback"))$("#parentFeedback").textContent="Teacher Updates could not be checked right now."}
+}
+function installTeacherLesson(remote){
+  const idx=data.lessons.findIndex(l=>l.id===remote.id);if(idx>=0){data.lessons[idx]=mergeTeacherLesson(remote,data.lessons[idx]);if(lessonIndex===idx)wordIndex=0}else data.lessons.push(mergeTeacherLesson(remote,null));save();renderHome();if(!$("#lessonScreen").classList.contains("hidden"))render();if($("#parentDialog").open){editingLesson=Math.min(editingLesson,data.lessons.length-1);renderParent()}
+}
+$("#checkUpdatesBtn").addEventListener("click",()=>checkTeacherUpdates(false));
+$("#parentCheckUpdatesBtn").addEventListener("click",()=>checkTeacherUpdates(true));
+
 renderHome();
+checkTeacherUpdates(false);
 if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
 })();
 </script>
